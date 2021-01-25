@@ -1,0 +1,1170 @@
+<?php
+
+include "connection.php";
+
+mysql_set_charset('utf8');
+$query = "select * from judical_acts";
+$judical_acts = mysql_query($query);
+
+if (!$judical_acts) {
+    die('Неверный запрос: ' . mysql_error());
+}
+
+$query = "select * from main_data limit 1";
+$result = mysql_query($query);
+
+if (!$result) {
+    die('Неверный запрос: ' . mysql_error());
+}
+
+$main_data = mysql_fetch_assoc($result);
+$fio = $main_data["lastname"]." ".$main_data["firstname"]." ".$main_data["middlename"];
+
+$query = "select * from actual_articles";
+$actual_articles = mysql_query($query);
+
+if (!$actual_articles) {
+    die('Неверный запрос: ' . mysql_error());
+}
+
+$query = "select * from services_list";
+$services_list = mysql_query($query);
+
+if (!$result) {
+    die('Неверный запрос: ' . mysql_error());
+}
+
+mysql_close($conn);
+
+?>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Юрист <? echo $fio; ?> - решение судебных и досудебных вопросов</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=Object.fromEntries%2CObject.values%2CArray.prototype.findIndex%2CArray.prototype.find%2CWeakMap%2CString.prototype.startsWith%2CElement.prototype.matches%2CElement.prototype.closest"></script>
+    <script src="scripts/axios/axios.min.js"></script>
+    
+    <script src="https://unpkg.com/formdata-polyfill"></script>
+
+    <link rel="stylesheet" href="css/normalize.css">
+
+    <!-- 5.3.0 -->
+    <link rel="stylesheet" href="css/swiper/swiper.min.css">
+    <script src="scripts/swiper/swiper.min.js"></script>
+
+    <link rel="stylesheet" href="css/hystModal/hystmodal.min.css">
+    <script src="scripts/hystModal/hystmodal.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Юрист Шорудило Елизавета Сергеевна в Санкт-Петербурге окажет юридическую помощь в решении правовых проблем. Задать вопрос юристу можно онлайн на сайте. Наш телефон +7 911-250-18-31" />
+    <meta name="keywords" content="юрист, юрист в Санкт-Петербурге, консультация юриста, юрист спб" />
+
+    <!-- <script defer src="scripts/polifylls.js"></script> -->
+
+    <script src="scripts/formValidate/inputmask.min.js"></script>
+    <script src="scripts/formValidate/just-validate.min.js"></script>
+
+    <script>
+        const style = "style";
+    </script>
+
+    <script src="scripts/dark-mode-detecting.js"></script>
+
+    <script defer src="scripts/modalWindow.js"></script>
+    <script defer src="scripts/smooth-scroll.js"></script>
+    <script defer src="scripts/burger-menu.js"></script>
+    <script defer src="scripts/reviews-show-hide.js"></script>
+    <script defer src="scripts/services-tabs.js"></script>
+    <script defer src="scripts/custom-form-validation.js"></script>
+    <script defer src="scripts/judicial-acts-slider.js"></script>
+    <script defer src="scripts/actual-articles-slider.js"></script>
+    <script defer src="scripts/actual-articles-show-hide.js"></script>
+    <script defer src="scripts/services-item-modal.js"></script>
+    <script defer src="scripts/zoom-certificates.js"></script>
+    <!-- schema.org -->
+ 
+<meta itemprop="name"  content="Юрист Шорудило Елизавета Сергеевна - решение судебных и досудебных вопросов">
+<meta itemprop="description" name="description" content="Юрист с многолетней судебной практикой Шорудило Елизавета Сергеевна оказывает широкий спектр юридических услуг. Узнать цены и воспользоваться бесплатной онлайн консультацией можно на сайте.">
+<meta itemprop="image" name="image" content="https://law-shorudilo.ru/glavnaya/new-version/img/photo/Photo_1.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@law-shorudilo">
+<meta name="twitter:title" content="Юрист Шорудило Елизавета Сергеевна - решение судебных и досудебных вопросов">
+<meta name="twitter:description" content="Юрист с многолетней судебной практикой Шорудило Елизавета Сергеевна оказывает широкий спектр юридических услуг. Узнать цены и воспользоваться бесплатной онлайн консультацией можно на сайте.">
+<meta name="twitter:creator" content="@law-shorudilo">
+<meta name="twitter:image" content="https://law-shorudilo.ru/glavnaya/new-version/img/photo/Photo_1.jpg">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Юрист Шорудило Елизавета Сергеевна - решение судебных и досудебных вопросов" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://law-shorudilo.ru" />
+<meta property="og:image" content="https://law-shorudilo.ru/glavnaya/new-version/img/photo/Photo_1.jpg" />
+<meta property="og:description" content="Юрист с многолетней судебной практикой Шорудило Елизавета Сергеевна оказывает широкий спектр юридических услуг. Узнать цены и воспользоваться бесплатной онлайн консультацией можно на сайте." />
+<meta property="og:site_name" content="law-shorudilo" />
+<link rel="image_src" href="https://law-shorudilo.ru/glavnaya/new-version/img/photo/Photo_1.jpg">
+<!-- schema.org -->
+<!-- Open Graph -->
+<meta property="og:title" content="Юрист Шорудило Елизавета Сергеевна - решение судебных и досудебных вопросов" />
+        <meta property="og:description" content="Юрист с многолетней судебной практикой Шорудило Елизавета Сергеевна оказывает широкий спектр юридических услуг. Узнать цены и воспользоваться бесплатной онлайн консультацией можно на сайте." />
+        <meta property="og:site_name" content="law-shorudilo" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://law-shorudilo.ru" />
+        <meta property="og:image" content="https://law-shorudilo.ru/glavnaya/new-version/img/photo/Photo_1.jpg" />
+        <!-- Open Graph -->
+</head>
+<body>
+    <header class="header" name="anchor-top">
+        <div class="container">
+            <div class="header-container">
+                <a href="#" class="header-logo-link">
+                    <img src="img/logo.svg" alt="Юрист <? echo $fio; ?>">
+                    <span class="logo-text header-logo-text">
+                        Юрист <? echo $main_data["lastname"]; ?><br><? echo $main_data["firstname"] . " " . $main_data["middlename"]; ?>
+                    </span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#about-section" class="nav-link">Обо мне</a></li>
+                        <li class="nav-item"><a href="#services-section" class="nav-link">Услуги</a></li>
+                        <li class="nav-item"><a href="#reviews-section" class="nav-link">Отзывы</a></li>
+                        <li class="nav-item"><a href="#feedback-section" class="nav-link">Контакты</a></li>
+                    </ul>
+                </nav>
+                <div class="header-contacts">
+                    <a href="tel:+<? echo $main_data["phone"]; ?>" class="header-phone-link"><? echo $main_data["phone_format"]; ?></a>
+                    <a href="mailto:<? echo $main_data["email"]; ?>" class="header-mail-link"><? echo $main_data["email_format"]; ?></a>
+                </div>
+
+                <button class="nav-burger active not-active" aria-label="Кнопка бургер-меню">
+                    <span class="nav-burger-span"></span>
+                    <span class="nav-burger-span"></span>
+                    <span class="nav-burger-span"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="side-nav">
+            <div class="side-nav-content">
+                <ul class="side-nav-list">
+                    <li class="side-nav-item"><a href="#about-section" class="side-nav-link">Обо мне</a></li>
+                    <li class="side-nav-item"><a href="#services-section" class="side-nav-link">Услуги</a></li>
+                    <li class="side-nav-item"><a href="#reviews-section" class="side-nav-link">Отзывы</a></li>
+                    <li class="side-nav-item"><a href="#feedback-section" class="side-nav-link">Контакты</a></li>
+                </ul>
+        
+                <div class="side-contacts">
+                    <a href="tel:+<? echo $main_data["phone"]; ?>" class="side-phone-link"><? echo $main_data["phone_format"]; ?></a>
+                    <a href="mailto:<? echo $main_data["email"]; ?>" class="side-mail-link"><? echo $main_data["email_format"]; ?></a>
+                </div>
+            </div>
+        </div>
+
+        <section class="hero-section">
+            
+            <div class="container hero-container-add">
+                <div class="hero-container">
+                    <h1 class="hero-header">Правовое сопровождение физических и юридических лиц</h1>
+                    <h2 class="hero-desc">Основатель компании и ведущий практикующий юрист LAW SHORUDILO</h2>
+                    <a href="#anchor-feedback-section" class="hero-free-consult free-consult">Бесплатная консультация</a>
+                </div>
+
+                <ul class="hero-info">
+                    <li>
+                        <h2>8</h2>
+                        <p>лет практики</p>
+                    </li>
+                    <li>
+                        <h2>&gt;500</h2>
+                        <p>консультаций</p>
+                    </li>
+                    <li>
+                        <h2>&gt;350</h2>
+                        <p>решённых дел</p>
+                    </li>
+                </ul>
+            </div>
+            <!-- <div class="hero-bg"></div> -->
+            <div class="hero-photo"></div>
+
+        </section>
+    </header>
+
+    <main class="main">
+        <section id="about-section">
+            <div class="container">
+                <h2 class="section-header about-header">Обо мне</h2>
+
+                <div class="about-info">
+                    <div class="about-left">
+                        <p class="about-text">
+                            Имею высшее юридическое образование по специальности «Юриспруденция». Обладаю налоговым статусом «Самозанятый». Более 7 лет являюсь практикующим юристом.
+                        </p>
+                        <p class="about-text">
+                            Успешно решаю судебные и досудебные вопросы в области гражданского права: семейного, наследственного, трудового права и т.д. Консультирую и оказываю юридическую помощь по банкротству юридических и физических лиц.
+                        </p>
+                        <p class="about-text">
+                            Представляю интересы физических и юридических лиц в Арбитражных судах, Судах общей юрисдикции, ФСПП и иных государственных и негосударственных организациях.
+                        </p>
+                        <div class="about-contacts">
+                            <div class="about-contacts-icons">
+                                <a href="<? echo $main_data["vk"]; ?>">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none" class="about-icon">
+                                        <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.95431 31.0457 0 20 0C8.95431 0 0 8.95431 0 20C0 31.0457 8.95431 40 20 40Z" fill="#4D76A1"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M18.7208 28.9372H20.2749C20.2749 28.9372 20.7443 28.8851 20.984 28.6238C21.2046 28.3839 21.1976 27.9335 21.1976 27.9335C21.1976 27.9335 21.1672 25.8246 22.135 25.514C23.0891 25.2081 24.3143 27.5522 25.6128 28.4535C26.5948 29.1357 27.341 28.9861 27.341 28.9861L30.8131 28.9372C30.8131 28.9372 32.6295 28.824 31.7682 27.3798C31.6976 27.2617 31.2667 26.3115 29.1866 24.3589C27.0095 22.3154 27.3011 22.6459 29.9236 19.111C31.5208 16.9583 32.1593 15.644 31.9599 15.081C31.7697 14.5449 30.595 14.6866 30.595 14.6866L26.6855 14.7112C26.6855 14.7112 26.3957 14.6713 26.1808 14.8012C25.9707 14.9286 25.8356 15.2256 25.8356 15.2256C25.8356 15.2256 25.2168 16.8915 24.3916 18.3082C22.6507 21.2977 21.9547 21.4555 21.6702 21.2699C21.0084 20.8373 21.1736 19.5319 21.1736 18.6045C21.1736 15.7075 21.6081 14.4996 20.3275 14.1869C19.9025 14.083 19.5898 14.0145 18.503 14.0034C17.1081 13.9888 15.9274 14.0077 15.2589 14.3389C14.8141 14.5592 14.471 15.05 14.68 15.0782C14.9384 15.1132 15.5236 15.2377 15.8339 15.665C16.2345 16.2162 16.2204 17.4541 16.2204 17.4541C16.2204 17.4541 16.4505 20.8644 15.6828 21.2881C15.1558 21.5786 14.4329 20.9854 12.8809 18.2733C12.0857 16.884 11.4853 15.3484 11.4853 15.3484C11.4853 15.3484 11.3695 15.0614 11.163 14.9079C10.9124 14.722 10.5623 14.6627 10.5623 14.6627L6.84729 14.6873C6.84729 14.6873 6.2896 14.703 6.08488 14.9483C5.90275 15.1664 6.07041 15.6175 6.07041 15.6175C6.07041 15.6175 8.97886 22.4989 12.2721 25.9666C15.2917 29.146 18.7208 28.9372 18.7208 28.9372Z" fill="#F9F9F9"/>
+                                    </svg>
+                                </a>
+                                <a href="<? echo $main_data["inst"]; ?>">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none" class="about-icon">
+                                        <path d="M0 19.0056V20.0601C0.271863 30.1438 8.3948 38.2421 18.0583 39H21.0323C30.7535 38.2338 38.7364 30.0614 39 20.0436V19.0056C38.7364 8.80651 30.4734 0.535228 20.5215 0.0244514C9.81179 -0.519279 0.296578 8.0733 0 19.0056Z" fill="url(#paint0_radial)"/>
+                                        <path d="M19.5 10.1613C22.5705 10.1613 22.937 10.1697 24.1505 10.2281C25.2744 10.2782 25.8771 10.4784 26.2843 10.637C26.8219 10.854 27.2047 11.1127 27.6038 11.5299C28.0028 11.9471 28.2553 12.3477 28.4671 12.9068C28.6218 13.3324 28.8091 13.9666 28.8661 15.1349C28.9232 16.4033 28.9313 16.7789 28.9313 19.9833C28.9313 23.1878 28.9232 23.5633 28.8661 24.8317C28.8173 26 28.63 26.6342 28.4671 27.0598C28.2553 27.6189 28.011 28.0195 27.6038 28.4367C27.2047 28.854 26.8219 29.1127 26.2843 29.3296C25.8771 29.4965 25.2663 29.6885 24.1505 29.7385C22.937 29.7969 22.5705 29.8053 19.5 29.8053C16.4295 29.8053 16.063 29.7969 14.8495 29.7385C13.7256 29.6885 13.1229 29.4882 12.7157 29.3296C12.1781 29.1127 11.7953 28.854 11.3962 28.4367C10.9972 28.0195 10.7447 27.6189 10.5329 27.0598C10.3782 26.6342 10.1909 26 10.1339 24.8317C10.0768 23.5633 10.0687 23.1878 10.0687 19.9833C10.0687 16.7789 10.0768 16.4033 10.1339 15.1349C10.1827 13.9666 10.37 13.3324 10.5329 12.9068C10.7447 12.3477 10.989 11.9471 11.3962 11.5299C11.7953 11.1127 12.1781 10.854 12.7157 10.637C13.1229 10.4701 13.7337 10.2782 14.8495 10.2281C16.063 10.178 16.4295 10.1613 19.5 10.1613ZM19.5 8C16.3725 8 15.9816 8.01669 14.7599 8.0751C13.5382 8.13352 12.6994 8.3338 11.9664 8.63421C11.2089 8.94298 10.5655 9.35188 9.93024 10.0195C9.28683 10.6871 8.89589 11.3547 8.60269 12.1474C8.31763 12.9068 8.12217 13.783 8.06516 15.0598C8.00814 16.3366 8 16.7455 8 20C8 23.2545 8.01629 23.6634 8.06516 24.9402C8.12217 26.217 8.31763 27.0848 8.60269 27.8526C8.89589 28.637 9.28683 29.3129 9.93024 29.9805C10.5737 30.6481 11.2089 31.057 11.9664 31.3658C12.6994 31.6662 13.5382 31.8665 14.7599 31.9249C15.9897 31.9833 16.3807 32 19.5 32C22.6193 32 23.0184 31.9833 24.2401 31.9249C25.4618 31.8665 26.3006 31.6662 27.0336 31.3658C27.7911 31.057 28.4345 30.6481 29.0698 29.9805C29.7132 29.3129 30.1041 28.6453 30.3973 27.8526C30.6824 27.0932 30.8778 26.217 30.9348 24.9402C30.9919 23.6634 31 23.2545 31 20C31 16.7455 30.9837 16.3366 30.9348 15.0598C30.8778 13.783 30.6824 12.9152 30.3973 12.1474C30.1041 11.363 29.7132 10.6871 29.0698 10.0195C28.4263 9.35188 27.7911 8.94298 27.0336 8.63421C26.3006 8.3338 25.4618 8.13352 24.2401 8.0751C23.0184 8.01669 22.6193 8 19.5 8Z" fill="#F9F9F9"/>
+                                        <path d="M20 14C16.6814 14 14 16.6829 14 20C14 23.3171 16.6897 26 20 26C23.3103 26 26 23.3171 26 20C26 16.6829 23.3103 14 20 14ZM20 23.8943C17.8483 23.8943 16.1021 22.1545 16.1021 20C16.1021 17.8455 17.8483 16.1057 20 16.1057C22.1517 16.1057 23.8979 17.8455 23.8979 20C23.8979 22.1545 22.1517 23.8943 20 23.8943Z" fill="#F9F9F9"/>
+                                        <path d="M25.5 15C26.3284 15 27 14.3284 27 13.5C27 12.6716 26.3284 12 25.5 12C24.6716 12 24 12.6716 24 13.5C24 14.3284 24.6716 15 25.5 15Z" fill="#F9F9F9"/>
+                                        <defs>
+                                        <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.653051 35.0327) rotate(-86.9999) scale(56.3852 47.9265)">
+                                            <stop stop-color="#FED576"/>
+                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                            <stop offset="1" stop-color="#4C63D2"/>
+                                        </radialGradient>
+                                        </defs>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="about-contacts-text">
+                                Также вы можете посетить мои страницы в социальных сетях, здесь я пишу актуальные статьи, делюсь с своим опытом и знаниями. Вы найдёте для себя много полезной информации
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="about-right">
+                        <picture>
+                            <source srcset="img/photo/Photo_5.jpg" media="(max-width: 479px)">
+                            <source srcset="img/photo/Photo_4.jpg" media="(max-width: 767px)">
+                            <source srcset="img/photo/Photo_3.jpg" media="(max-width: 1024px)">
+                            <img src="img/photo/Photo_1.jpg" class="about-photo" alt="Фото юриста <? echo $fio; ?>">
+                        </picture>
+                        <p class="about-fio">Юрист <? echo $fio; ?></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="diplomas-section">
+            <div class="container">
+                <h2 class="section-header diplomas-header">Дипломы и сертификаты</h2>
+
+                <div class="diplomas-container">
+                    <img src="img/Certificate.jpg" class="diplomas-img img-cert" alt="Удостоверение о принятии участия в VII юридическом форуме Главные правовые события года">
+                    <img src="img/Diploma.jpg" class="diplomas-img img-diploma" alt="Диплом специалиста">
+                    <img src="img/Certificate_2.jpg" class="diplomas-img img-cert2" alt="Удостоверение о принятии участия в IX юридическом форуме Главные правовые события года">
+                    <img src="img/Certificate_3.jpg" class="diplomas-img img-cert3" alt="Сертификат участия в вебинаре Образование в Америке - как, где, когда">
+                </div>
+            </div>
+
+            <div class="diplomas-modal">
+                <button class="diplomas-close"></button>
+                <!-- <span class="diplomas-close"></span> -->
+                <img class="diplomas-content diplomas-content-in">
+                <!-- <div class="modal-caption modal-caption-in" id="caption"></div> -->
+              </div>
+        </section>
+
+        <section class="judicial-acts-section">
+            <div class="container">
+                <h2 class="section-header judicial-acts-header">Судебные акты</h2>
+
+                <div class="swiper-container judicial-acts-container">
+                    <div class="swiper-wrapper">
+
+                        <?
+    
+                            while ($row = mysql_fetch_object($judical_acts)) {
+
+                        ?>
+
+                        <div class="swiper-slide">
+                            <div class="act">
+                                <p>
+                                    <? echo $row->judical_name; ?>
+                                </p>
+                                <a href="../../judical_acts/<? echo $row->judical_link; ?>">
+                                    скачать
+                                </a>
+                            </div>
+                        </div>
+
+                        <? } ?>
+
+                    </div>
+                
+                    <div class="swiper-button-next judicial-acts-button-next"></div>
+                    <div class="swiper-button-prev judicial-acts-button-prev"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services-section">
+            <div class="container services-section-add-container">
+                <h2 class="section-header services-header">Услуги</h2>
+
+                <div class="services-container">
+                    <div class="services-tabs">
+                        <div class="tab active" data-list="physical"><a href="#">Физическим лицам</a></div>
+                        <div class="tab" data-list="law"><a href="#">Юридическим лицам</a></div>
+                    </div>
+
+                    <p class="services-desc"></p>
+
+                    <template id="service-list-open-item">
+                        <div>
+                            <div class="form_radio_group">
+                                <div class="form_radio_group-item">
+                                    <input id="radio-phys" type="radio" name="face" value="physical" checked>
+                                    <label for="radio-phys" class="phys-modal form_radio_group_left">Физ.лицо</label>
+                                </div>
+                                <div class="form_radio_group-item">
+                                    <input id="radio-law" type="radio" name="face" value="law">
+                                    <label for="radio-law" class="law-modal">Юр.лицо</label>
+                                </div>
+                            </div>
+
+                            <div class="swiper-container services-list-item-swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
+                                        <ul class="service-card-list"></ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="services-card-price">
+                                ОТ <span class="price">2000</span>
+                            </div>
+
+                            <button class="free-consult free-consult-services-modal" disabled>Заказать</button>
+                        </div>
+                    </template>
+
+                    <template id="service-modal-swiper-slide">
+                        <div class="swiper-slide">
+                            <ul class="service-card-list"></ul>
+                        </div>
+                    </template>
+
+                    <template id="service-card-list-open-item">
+                        <li class="service-card-list-item">
+                            <label class="agreement">
+                                <input type="checkbox" class="custom-checkbox" data-price="">
+                                <span class="custom-checkbox"></span>
+                                <span class="list-item-text"></span>
+                            </label>
+                        </li>
+                    </template>
+
+                    <ul class="services-list services-list-physical active">
+
+                        <?
+    
+                            while ($row = mysql_fetch_object($services_list)) {
+
+                                if ($row->service_type != "phsysical")
+                                    continue;
+
+                        ?>
+
+                        <li class="services-list-item <? echo $row->bg_image; ?>" data-service="<? echo $row->service_type . "-" . $row->bg_image; ?>"
+                            data-delimeter="<? echo $row->delimeter; ?>" data-service-id="<? echo $row->id; ?>">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                <? echo $row->service_name; ?>
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+
+                        <? } ?>
+
+                        <!-- <li class="services-list-item family-dispute" data-service="phsysical-family-dispute">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Семейные споры
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item bankruptcy" data-service="phsysical-bankruptcy">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Банкротство
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item management" data-service="phsysical-management">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Ведение наследственных дел
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item credit-disputes" data-service="phsysical-credit-disputes">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Кредитные споры
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item labour-disputes" data-service="phsysical-labour-disputes">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Трудовые споры
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item enforcement-proceeding" data-service="phsysical-enforcement-proceeding">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Исполнительное производство
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item drafting" data-service="phsysical-drafting">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Составление гражданско-правовых договоров
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li> -->
+                    </ul>
+
+                    <ul class="services-list services-list-law">
+
+                        <?
+        
+                            mysql_data_seek($services_list, 0);
+
+                            while ($row = mysql_fetch_object($services_list)) {
+
+                                if ($row->service_type != "law")
+                                    continue;
+
+                        ?>
+
+                        <li class="services-list-item <? echo $row->bg_image; ?>" data-service="<? echo $row->service_type . "-" . $row->bg_image; ?>"
+                            data-delimeter="<? echo $row->delimeter; ?>" data-service-id="<? echo $row->id; ?>">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                <? echo $row->service_name; ?>
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+
+                        <? } ?>
+
+                        <!-- <li class="services-list-item documentation-analisys" data-service="law-documentation-analisys">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Анализ документации
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item bankruptcy" data-service="law-bankruptcy">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Банкротство
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item management" data-service="law-management">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Взыскание дебиторской задолженности
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item drafting" data-service="law-drafting">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Составление гражданско-правовых договоров
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item labour-disputes" data-service="law-labour-disputes">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Трудовые споры
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li>
+                        <li class="services-list-item enforcement-proceeding" data-service="law-enforcement-proceeding">
+                            <a href="#" class="services-list-item-link" ontouchstart="">
+                                Исполнительное производство
+                            </a>
+
+                            <button class="hystmodal__close"></button>
+                        </li> -->
+                    </ul>
+
+                    <a href="#anchor-feedback-section" class="services-free-consult free-consult">Бесплатная консультация</a>
+                </div>
+            </div>
+
+            <div class="hystmodal services-modal" id="servicesModalWin" aria-hidden="true" data-service-id="">
+                <div class="hystmodal__wrap">
+                    <div class="hystmodal__window services-win" role="dialog" aria-modal="true">
+                        <button data-hystclose class="hystmodal__close"></button>
+                        
+                        <header class="modal-header">
+                            <p>Анализ документации</p>
+                        </header>
+
+                        <div class="form_radio_group">
+                            <div class="form_radio_group-item">
+                                <input id="radio-phys-modal" type="radio" name="face-modal" value="physical" checked>
+                                <label for="radio-phys-modal" class="phys-modal form_radio_group_left">Физ.лицо</label>
+                            </div>
+                            <div class="form_radio_group-item">
+                                <input id="radio-law-modal" type="radio" name="face-modal" value="law">
+                                <label for="radio-law-modal" class="law-modal">Юр.лицо</label>
+                            </div>
+                        </div>
+
+                        <div class="modal-content" id="modal-2-content">
+                            <div class="swiper-container services-swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
+                                        <ul class="service-card-list"></ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="swiper-button-prev services-button-prev"></div>
+                            <div class="swiper-button-next services-button-next"></div>
+                        </div>
+
+                        <footer class="modal-footer">
+                            <div class="services-card-price">
+                                ОТ <span class="price">2000</span>
+                            </div>
+                            <button class="free-consult free-consult-services-modal" disabled>Заказать</button>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hystmodal services-modal-form" id="servicesModalWinForm" aria-hidden="true" data-service-id="">
+                <div class="hystmodal__wrap">
+                    <div class="hystmodal__window services-win-form" role="dialog" aria-modal="true">
+                        <button data-hystclose class="hystmodal__close"></button>
+                        
+                        <header class="modal-header">
+                            <p>Отправить заявку</p>
+                        </header>
+
+                        <div class="modal-content" id="modal-form-content">
+                            <form action="" method="POST" class="services-form-container" novalidate>
+                                <input type="text" name="username" placeholder="Ваше имя" data-validate-field="name" required>
+                                <div class="services-phone-container">
+                                    <label class="phone-code">+7</label>
+                                    <input type="tel" class="services-phone-code" name="phone" placeholder="(999) 999-99-99" data-validate-field="phone" required>
+                                </div>
+                                <textarea name="message" placeholder="Сообщение" data-validate-field="message"></textarea>
+                                <label for="services-agreement" class="agreement">
+                                    Я принимаю условия политики конфиденциальности и даю согласие на обработку своих персональных данных
+                                    <input type="checkbox" class="custom-checkbox" id="services-agreement" name="agreement" data-validate-field="agreement" required>
+                                    <span class="custom-checkbox"></span>
+                                </label>
+                                <button type="submit" class="services-send">Отправить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="actual-articles-section">
+            <div class="container">
+                <h2 class="section-header actual-articles-header">
+                    Актуальные статьи
+                </h2>
+
+                <div class="swiper-container actual-articles-container">
+                    <div class="swiper-wrapper">
+                        <?
+        
+                            while ($row = mysql_fetch_object($actual_articles)) {
+
+                        ?>
+
+                        <div class="swiper-slide">
+                            <div class="actual-articles-slide">
+                                <h3 class="actual-articles-slide-header">
+                                    <? echo $row->header; ?>
+                                </h3>
+                                <div class="actual-articles-slide-text">
+                                    <? echo $row->slide_text; ?>
+
+                                    <?
+                                        if(!empty($row->hide_slide_text)) {
+                                    ?>
+
+                                        <div class="actual-articles-slide-hide">
+                                            <? echo $row->hide_slide_text; ?>
+                                        </div>
+                                        <p>
+                                            <button class="show-full-actual-article"><span>Показать полностью</span></button>
+                                        </p>
+
+                                    <?
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <? } ?>
+                    </div>
+
+                    <div class="swiper-pagination actual-articles-pagination"></div>
+
+                    <div class="swiper-button-prev actual-articles-button-prev"></div>
+                    <div class="swiper-button-next actual-articles-button-next"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews-section">
+            <div class="container">
+                <h2 class="section-header reviews-header">
+                    Отзывы
+                </h2>
+
+                <div class="reviews-container">
+                    <div class="reviews-col reviews-left">
+                        <div class="reviews-item">
+                            <div class="reviews-heading">
+                                <img src="img/reviews-photo.png" alt="Анна Колесникова">
+                                <div class="reviews-head-block">
+                                    <h3 class="reviews-title">
+                                        Анна Колесникова
+                                    </h3>
+                                    <div class="reviews-social">
+                                        <a href="#1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                                <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                            </svg>
+                                        </a>
+                                        <a href="#2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint1_radial)"/>
+                                                <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                <defs>
+                                                    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                        <stop stop-color="#FED576"/>
+                                                        <stop offset="0.2634" stop-color="#F47133"/>
+                                                        <stop offset="0.6091" stop-color="#BC3081"/>
+                                                        <stop offset="1" stop-color="#4C63D2"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-content">
+                                <div class="reviews-text">
+                                    Елизавета Сергеевна откликнулась очень быстро и в этот же день я смогла получить все ответы на свои вопросы. Я осталась довольна работой Елизаветы Сергеевны. Всем могу порекомндовать этого специалиста
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reviews-item">
+                            <div class="reviews-heading">
+                                <img src="img/reviews-photo2.png" alt="Андрей В.">
+                                <div class="reviews-head-block">
+                                    <h3 class="reviews-title">
+                                        Андрей В.
+                                    </h3>
+                                    <div class="reviews-social">
+                                        <a href="#2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint2_radial)"/>
+                                                <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                <defs>
+                                                    <radialGradient id="paint2_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                        <stop stop-color="#FED576"/>
+                                                        <stop offset="0.2634" stop-color="#F47133"/>
+                                                        <stop offset="0.6091" stop-color="#BC3081"/>
+                                                        <stop offset="1" stop-color="#4C63D2"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-content">
+                                <div class="reviews-text">
+                                    Елизавета, очень помогла мне в решении не одного вопроса, грамотный специалист! Спасибо!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reviews-item">
+                            <div class="reviews-heading">
+                                <img src="img/reviews-photo3.png" alt="Елена С.">
+                                <div class="reviews-head-block">
+                                    <h3 class="reviews-title">
+                                        Елена С.
+                                    </h3>
+                                    <div class="reviews-social">
+                                        <a href="#1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                                <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                            </svg>
+                                        </a>
+                                        <a href="#2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint3_radial)"/>
+                                                <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                <defs>
+                                                    <radialGradient id="paint3_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                        <stop stop-color="#FED576"/>
+                                                        <stop offset="0.2634" stop-color="#F47133"/>
+                                                        <stop offset="0.6091" stop-color="#BC3081"/>
+                                                        <stop offset="1" stop-color="#4C63D2"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-content">
+                                <div class="reviews-text">
+                                    Елизавета оперативно проконсультировала по вопросу развода, а также грамотно составила исковое заявление о расторжении брака и взыскании алиментов. А моей подруге помогла инициировать процедуру банкротства - проконсультировала по пакету необходимых документов и подготовила заявление в суд.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item-for-hide hidden-items">
+                            <div class="reviews-item">
+                                <div class="reviews-heading">
+                                    <img src="img/reviews-photo4.png" alt="Александр К.">
+                                    <div class="reviews-head-block">
+                                        <h3 class="reviews-title">
+                                            Александр К.
+                                        </h3>
+                                        <div class="reviews-social">
+                                            <a href="#1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                                    <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                                </svg>
+                                            </a>
+                                            <a href="#2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                    <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint4_radial)"/>
+                                                    <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                    <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                    <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                    <defs>
+                                                        <radialGradient id="paint4_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                            <stop stop-color="#FED576"/>
+                                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                                            <stop offset="1" stop-color="#4C63D2"/>
+                                                        </radialGradient>
+                                                    </defs>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reviews-content">
+                                    <div class="reviews-text">
+                                        Большое спасибо за помощь Елизавете. Обратился с просьбой о составление претензии о возврате денежных средств. Так рад что оказывается еще есть честные юристы, которые за небольшие деньги быстро и качественно помогают людям.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-item">
+                                <div class="reviews-heading">
+                                    <img src="img/reviews-photo5.png" alt="Елизавета Ш.">
+                                    <div class="reviews-head-block">
+                                        <h3 class="reviews-title">
+                                            Елизавета Ш.
+                                        </h3>
+                                        <div class="reviews-social">
+                                            <a href="#2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                    <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint5_radial)"/>
+                                                    <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                    <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                    <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                    <defs>
+                                                        <radialGradient id="paint5_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                            <stop stop-color="#FED576"/>
+                                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                                            <stop offset="1" stop-color="#4C63D2"/>
+                                                        </radialGradient>
+                                                    </defs>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reviews-content">
+                                    <div class="reviews-text">
+                                        По просьбе Елизаветы, оставим тут отзыв. Результатом работы Елизаветы остались довольны, брали ее на аутсорсинг по делу
+    о взыскании задолженности, грамотный подход и своевременная подача документов в суд позволили решить вопрос клиента
+    без лишнего "геморроя", должник в розыске
+    с его счета в банке сняли более 70 процентов долга по бумаге от приставов. Клиент естественно остался доволен, так как расчитывал на меньшую сумму. 
+    Да и компенсацию за юридические услуги суд одобрил, так что как итог, чисто в денежном эквиваленте - вопрос решен на 110 процентов.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reviews-col reviews-right">
+                        <div class="reviews-item">
+                            <div class="reviews-heading">
+                                <img src="img/reviews-photo4.png" alt="Александр К.">
+                                <div class="reviews-head-block">
+                                    <h3 class="reviews-title">
+                                        Александр К.
+                                    </h3>
+                                    <div class="reviews-social">
+                                        <a href="#1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                                <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                            </svg>
+                                        </a>
+                                        <a href="#2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint6_radial)"/>
+                                                <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                <defs>
+                                                    <radialGradient id="paint6_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                        <stop stop-color="#FED576"/>
+                                                        <stop offset="0.2634" stop-color="#F47133"/>
+                                                        <stop offset="0.6091" stop-color="#BC3081"/>
+                                                        <stop offset="1" stop-color="#4C63D2"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-content">
+                                <div class="reviews-text">
+                                    Большое спасибо за помощь Елизавете. Обратился с просьбой о составление претензии о возврате денежных средств. Так рад что оказывается еще есть честные юристы, которые за небольшие деньги быстро и качественно помогают людям.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reviews-item">
+                            <div class="reviews-heading">
+                                <img src="img/reviews-photo5.png" alt="Елизавета Ш.">
+                                <div class="reviews-head-block">
+                                    <h3 class="reviews-title">
+                                        Елизавета Ш.
+                                    </h3>
+                                    <div class="reviews-social">
+                                        <a href="#2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint7_radial)"/>
+                                                <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                <defs>
+                                                    <radialGradient id="paint7_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                        <stop stop-color="#FED576"/>
+                                                        <stop offset="0.2634" stop-color="#F47133"/>
+                                                        <stop offset="0.6091" stop-color="#BC3081"/>
+                                                        <stop offset="1" stop-color="#4C63D2"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-content">
+                                <div class="reviews-text">
+                                    По просьбе Елизаветы, оставим тут отзыв. Результатом работы Елизаветы остались довольны, брали ее на аутсорсинг по делу
+о взыскании задолженности, грамотный подход и своевременная подача документов в суд позволили решить вопрос клиента
+без лишнего "геморроя", должник в розыске
+с его счета в банке сняли более 70 процентов долга по бумаге от приставов. Клиент естественно остался доволен, так как расчитывал на меньшую сумму. 
+Да и компенсацию за юридические услуги суд одобрил, так что как итог, чисто в денежном эквиваленте - вопрос решен на 110 процентов.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item-for-hide hidden-items">
+                            <div class="reviews-item">
+                                <div class="reviews-heading">
+                                    <img src="img/reviews-photo.png" alt="Анна Колесникова">
+                                    <div class="reviews-head-block">
+                                        <h3 class="reviews-title">
+                                            Анна Колесникова
+                                        </h3>
+                                        <div class="reviews-social">
+                                            <a href="#1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                                    <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                                </svg>
+                                            </a>
+                                            <a href="#2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                    <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint8_radial)"/>
+                                                    <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                    <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                    <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                    <defs>
+                                                        <radialGradient id="paint8_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                            <stop stop-color="#FED576"/>
+                                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                                            <stop offset="1" stop-color="#4C63D2"/>
+                                                        </radialGradient>
+                                                    </defs>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reviews-content">
+                                    <div class="reviews-text">
+                                        Елизавета Сергеевна откликнулась очень быстро и в этот же день я смогла получить все ответы на свои вопросы. Я осталась довольна работой Елизаветы Сергеевны. Всем могу порекомндовать этого специалиста
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-item">
+                                <div class="reviews-heading">
+                                    <img src="img/reviews-photo2.png" alt="Андрей В.">
+                                    <div class="reviews-head-block">
+                                        <h3 class="reviews-title">
+                                            Андрей В.
+                                        </h3>
+                                        <div class="reviews-social">
+                                            <a href="#2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                    <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint9_radial)"/>
+                                                    <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                    <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                    <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                    <defs>
+                                                        <radialGradient id="paint9_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                            <stop stop-color="#FED576"/>
+                                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                                            <stop offset="1" stop-color="#4C63D2"/>
+                                                        </radialGradient>
+                                                    </defs>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reviews-content">
+                                    <div class="reviews-text">
+                                        Елизавета, очень помогла мне в решении не одного вопроса, грамотный специалист! Спасибо!
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reviews-item">
+                                <div class="reviews-heading">
+                                    <img src="img/reviews-photo3.png" alt="Елена С.">
+                                    <div class="reviews-head-block">
+                                        <h3 class="reviews-title">
+                                            Елена С.
+                                        </h3>
+                                        <div class="reviews-social">
+                                            <a href="#1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                                    <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                                </svg>
+                                            </a>
+                                            <a href="#2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                                    <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint10_radial)"/>
+                                                    <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                                    <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                                    <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                                    <defs>
+                                                        <radialGradient id="paint10_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                                            <stop stop-color="#FED576"/>
+                                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                                            <stop offset="1" stop-color="#4C63D2"/>
+                                                        </radialGradient>
+                                                    </defs>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reviews-content">
+                                    <div class="reviews-text">
+                                        Елизавета оперативно проконсультировала по вопросу развода, а также грамотно составила исковое заявление о расторжении брака и взыскании алиментов. А моей подруге помогла инициировать процедуру банкротства - проконсультировала по пакету необходимых документов и подготовила заявление в суд.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="reviews-all">Показать все</a>
+            </div>
+        </section>
+
+        <section name="anchor-feedback-section" class="feedback-section" id="feedback-section">
+            <div class="container">
+                <h2 class="section-header feedback-header">
+                    Обратная связь
+                </h2>
+
+                <div class="feedback-container">
+                    <div class="feedback-left">
+                        <div>
+                            <p class="feedback-questions">
+                                Остались вопросы? Свяжитесь со мной удобным для вас способом
+                            </p>
+                        </div>
+
+                        <div class="feedback-contacts">
+                            <a href="tel:+<? echo $main_data["phone"]; ?>" class="feedback-phone-link"><? echo $main_data["phone_format"]; ?></a>
+                            <a href="mailto:<? echo $main_data["email"]; ?>" class="feedback-mail-link"><? echo $main_data["email_format"]; ?></a>
+                        </div>
+                    </div>
+                    <div class="feedback-right">
+                        <form action="" method="POST" class="feedback-form-container" novalidate>
+                            <input type="text" name="username" id="username" placeholder="Ваше имя" data-validate-field="name" required>
+                            <div class="phone-container">
+                                <label class="phone-code">+7</label>
+                                <input type="tel" name="phone" id="phone" placeholder="(999) 999-99-99" data-validate-field="phone" required>
+                            </div>
+                            <label for="agreement" class="agreement">
+                                Я принимаю условия политики конфиденциальности и даю согласие на обработку своих персональных данных
+                                <input type="checkbox" class="custom-checkbox" name="agreement" id="agreement" data-validate-field="agreement" required>
+                                <span class="custom-checkbox"></span>
+                            </label>
+                            <button type="submit" class="feedback-recall">Перезвоните мне</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#anchor-top" class="up-link"></a>
+
+            <div class="hystmodal feedback-modal" id="feedbackOkModalWin" aria-hidden="true">
+                <div class="hystmodal__wrap">
+                    <div class="hystmodal__window feedback-ok-win" role="dialog" aria-modal="true">
+                        <button data-hystclose class="hystmodal__close"></button>
+
+                        <p>Спасибо! Данные успешно отправлены</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hystmodal feedback-modal" id="feedbackErrorModalWin" aria-hidden="true">
+                <div class="hystmodal__wrap">
+                    <div class="hystmodal__window feedback-error-win" role="dialog" aria-modal="true">
+                        <button data-hystclose class="hystmodal__close"></button>
+
+                        <p>Сервис временно недоступен</p>
+                        <span>Вы всегда можете связаться со мной:</span>
+
+                        <div class="contacts">
+                            <a href="tel:+<? echo $main_data["phone"]; ?>" class="feedback-modal-phone-link"><? echo $main_data["phone_format"]; ?></a>
+                            <a href="mailto:<? echo $main_data["email"]; ?>" class="feedback-modal-mail-link"><? echo $main_data["email_format"]; ?></a>
+                        </div>
+
+                        <div class="messangers">
+                            <a href="whatsapp://send?phone=+<? echo $main_data["phone"]; ?>"><img src="img/Watsapp_icon.svg" alt="What's App"></a>
+                            <a href="viber://add?number=<? echo $main_data["phone"]; ?>"><img src="img/Viber_icon.svg" alt="Viber"></a>
+                        </div>
+
+                        <button class="repeat"><span>Повторить</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-left">
+                    <div class="footer-logo-menu">
+                        <a href="#" class="footer-logo-link">
+                            <img src="img/logo.svg" alt="Юрист <? echo $fio; ?>">
+                            <span class="logo-text footer-logo-text">
+                                Юрист <? echo $main_data["lastname"]; ?><br><? echo $main_data["firstname"] . " " . $main_data["middlename"]; ?>
+                            </span>
+                        </a>
+                        <nav class="nav nav-footer">
+                            <ul class="nav-list">
+                                <li class="nav-item"><a href="#about-section" class="nav-link">Обо мне</a></li>
+                                <li class="nav-item"><a href="#services-section" class="nav-link">Услуги</a></li>
+                                <li class="nav-item"><a href="#reviews-section" class="nav-link">Отзывы</a></li>
+                                <li class="nav-item"><a href="#feedback-section" class="nav-link">Контакты</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <a href="#anchor-top" class="footer-up-link"></a>
+
+                    <div class="footer-policy">
+                        <a href="policy.html" class="privacy-policy-left">Политика конфиденциальности</a>
+                    </div>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-cont">
+                        <div class="footer-contacts">
+                            <a href="tel:+<? echo $main_data["phone"]; ?>" class="header-phone-link footer-phone-link"><? echo $main_data["phone_format"]; ?></a>
+                            <a href="mailto:<? echo $main_data["email"]; ?>" class="header-mail-link footer-mail-link"><? echo $main_data["email_format"]; ?></a>
+                        </div>
+                        <div class="footer-social">
+                            <a href="<? echo $main_data["vk"]; ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                    <path d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36Z" fill="#4D76A1"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7423 24.9456H19.1768C19.1768 24.9456 19.6102 24.9004 19.8314 24.674C20.035 24.4661 20.0285 24.0757 20.0285 24.0757C20.0285 24.0757 20.0005 22.248 20.8939 21.9788C21.7746 21.7137 22.9055 23.7453 24.1042 24.5264C25.0106 25.1176 25.6994 24.988 25.6994 24.988L28.9044 24.9456C28.9044 24.9456 30.5811 24.8475 29.7861 23.5958C29.7209 23.4934 29.3231 22.6699 27.403 20.9777C25.3934 19.2067 25.6625 19.4931 28.0834 16.4296C29.5577 14.5638 30.1471 13.4248 29.963 12.9369C29.7874 12.4723 28.7031 12.5951 28.7031 12.5951L25.0943 12.6164C25.0943 12.6164 24.8268 12.5818 24.6284 12.6944C24.4345 12.8048 24.3097 13.0622 24.3097 13.0622C24.3097 13.0622 23.7386 14.506 22.9768 15.7338C21.3699 18.3247 20.7274 18.4614 20.4648 18.3006C19.8539 17.9256 20.0064 16.7943 20.0064 15.9906C20.0064 13.4798 20.4074 12.433 19.2254 12.162C18.8331 12.0719 18.5444 12.0125 17.5412 12.003C16.2536 11.9903 15.1637 12.0067 14.5466 12.2938C14.1361 12.4846 13.8194 12.91 14.0123 12.9344C14.2508 12.9647 14.791 13.0727 15.0774 13.443C15.4472 13.9207 15.4342 14.9935 15.4342 14.9935C15.4342 14.9935 15.6466 17.9491 14.938 18.3163C14.4515 18.5682 13.7842 18.054 12.3516 15.7035C11.6176 14.4995 11.0633 13.1686 11.0633 13.1686C11.0633 13.1686 10.9565 12.9199 10.7659 12.7869C10.5345 12.6257 10.2113 12.5743 10.2113 12.5743L6.78211 12.5957C6.78211 12.5957 6.26732 12.6093 6.07835 12.8218C5.91023 13.0108 6.06499 13.4019 6.06499 13.4019C6.06499 13.4019 8.74972 19.3657 11.7896 22.3711C14.5769 25.1265 17.7423 24.9456 17.7423 24.9456Z" fill="#F9F9F9"/>
+                                </svg>
+                            </a>
+                            <a href="<? echo $main_data["inst"]; ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="34" viewBox="0 0 35 34" fill="none">
+                                    <path d="M0 16.0816V16.9739C0.237009 25.5063 7.31855 32.3587 15.7431 33H18.3359C26.8107 32.3517 33.7702 25.4366 34 16.96V16.0816C33.7702 7.45167 26.5665 0.452885 17.8906 0.0206896C8.55386 -0.43939 0.258555 6.83126 0 16.0816Z" fill="url(#paint11_radial)"/>
+                                    <path d="M17 8.80111C19.67 8.80111 19.9887 8.80807 21.0439 8.85675C22.0212 8.89847 22.5453 9.06537 22.8994 9.1975C23.3669 9.3783 23.6997 9.59388 24.0467 9.94159C24.3938 10.2893 24.6133 10.6231 24.7975 11.089C24.932 11.4437 25.0949 11.9722 25.1445 12.9458C25.1941 14.0028 25.2011 14.3157 25.2011 16.9861C25.2011 19.6565 25.1941 19.9694 25.1445 21.0264C25.102 22 24.9391 22.5285 24.7975 22.8832C24.6133 23.3491 24.4009 23.6829 24.0467 24.0306C23.6997 24.3783 23.3669 24.5939 22.8994 24.7747C22.5453 24.9138 22.0142 25.0737 21.0439 25.1154C19.9887 25.1641 19.67 25.1711 17 25.1711C14.33 25.1711 14.0113 25.1641 12.9561 25.1154C11.9788 25.0737 11.4547 24.9068 11.1006 24.7747C10.6331 24.5939 10.3003 24.3783 9.95326 24.0306C9.60623 23.6829 9.38669 23.3491 9.20255 22.8832C9.06799 22.5285 8.9051 22 8.85552 21.0264C8.80595 19.9694 8.79887 19.6565 8.79887 16.9861C8.79887 14.3157 8.80595 14.0028 8.85552 12.9458C8.89802 11.9722 9.06091 11.4437 9.20255 11.089C9.38669 10.6231 9.59915 10.2893 9.95326 9.94159C10.3003 9.59388 10.6331 9.3783 11.1006 9.1975C11.4547 9.05841 11.9858 8.89847 12.9561 8.85675C14.0113 8.81502 14.33 8.80111 17 8.80111ZM17 7C14.2805 7 13.9405 7.01391 12.8782 7.06259C11.8159 7.11127 11.0864 7.27816 10.449 7.52851C9.79037 7.78581 9.23088 8.12656 8.67847 8.68289C8.11898 9.23922 7.77904 9.79555 7.52408 10.4562C7.2762 11.089 7.10623 11.8192 7.05666 12.8832C7.00708 13.9471 7 14.2879 7 17C7 19.7121 7.01416 20.0529 7.05666 21.1168C7.10623 22.1808 7.2762 22.904 7.52408 23.5438C7.77904 24.1975 8.11898 24.7608 8.67847 25.3171C9.23796 25.8734 9.79037 26.2142 10.449 26.4715C11.0864 26.7218 11.8159 26.8887 12.8782 26.9374C13.9476 26.9861 14.2875 27 17 27C19.7125 27 20.0595 26.9861 21.1218 26.9374C22.1841 26.8887 22.9136 26.7218 23.551 26.4715C24.2096 26.2142 24.7691 25.8734 25.3215 25.3171C25.881 24.7608 26.221 24.2045 26.4759 23.5438C26.7238 22.911 26.8938 22.1808 26.9433 21.1168C26.9929 20.0529 27 19.7121 27 17C27 14.2879 26.9858 13.9471 26.9433 12.8832C26.8938 11.8192 26.7238 11.096 26.4759 10.4562C26.221 9.8025 25.881 9.23922 25.3215 8.68289C24.762 8.12656 24.2096 7.78581 23.551 7.52851C22.9136 7.27816 22.1841 7.11127 21.1218 7.06259C20.0595 7.01391 19.7125 7 17 7Z" fill="#F9F9F9"/>
+                                    <path d="M17 12C14.2345 12 12 14.2358 12 17C12 19.7642 14.2414 22 17 22C19.7586 22 22 19.7642 22 17C22 14.2358 19.7586 12 17 12ZM17 20.2453C15.2069 20.2453 13.7517 18.7954 13.7517 17C13.7517 15.2046 15.2069 13.7547 17 13.7547C18.7931 13.7547 20.2483 15.2046 20.2483 17C20.2483 18.7954 18.7931 20.2453 17 20.2453Z" fill="#F9F9F9"/>
+                                    <path d="M22 12C22.5523 12 23 11.5523 23 11C23 10.4477 22.5523 10 22 10C21.4477 10 21 10.4477 21 11C21 11.5523 21.4477 12 22 12Z" fill="#F9F9F9"/>
+                                    <defs>
+                                        <radialGradient id="paint11_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0.569326 29.6431) rotate(-86.9092) scale(47.7146 41.7786)">
+                                            <stop stop-color="#FED576"/>
+                                            <stop offset="0.2634" stop-color="#F47133"/>
+                                            <stop offset="0.6091" stop-color="#BC3081"/>
+                                            <stop offset="1" stop-color="#4C63D2"/>
+                                        </radialGradient>
+                                    </defs>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <span class="copyright">© 2021</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
